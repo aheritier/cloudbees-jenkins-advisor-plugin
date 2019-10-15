@@ -61,7 +61,6 @@ public class BundleUploadTest {
 
     AdvisorGlobalConfiguration config = AdvisorGlobalConfiguration.getInstance();
     config.setEmail(TEST_EMAIL);
-    config.setValid(true);
     config.setAcceptToS(true);
 
     stubFor(get(urlEqualTo("/api/health"))
@@ -104,9 +103,6 @@ public class BundleUploadTest {
   @Test
   public void execute_isNotValid() {
     BundleUpload subject = j.getInstance().getExtensionList(BundleUpload.class).get(0);
-    AdvisorGlobalConfiguration config = AdvisorGlobalConfiguration.getInstance();
-    config.setValid(false);
-
     stubFor(any(anyUrl()));
 
     subject.run();
@@ -120,8 +116,8 @@ public class BundleUploadTest {
 
     AdvisorGlobalConfiguration config = AdvisorGlobalConfiguration.getInstance();
     config.setEmail(TEST_EMAIL);
-    config.setValid(true);
-
+    config.setAcceptToS(true);
+    
     wireMockRule.shutdownServer();
 
     subject.run();

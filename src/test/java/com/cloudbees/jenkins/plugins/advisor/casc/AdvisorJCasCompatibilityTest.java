@@ -1,9 +1,11 @@
 package com.cloudbees.jenkins.plugins.advisor.casc;
 
 import com.cloudbees.jenkins.plugins.advisor.AdvisorGlobalConfiguration;
+import com.cloudbees.jenkins.plugins.advisor.client.model.Recipient;
 import io.jenkins.plugins.casc.misc.RoundTripAbstractTest;
 import org.jvnet.hudson.test.RestartableJenkinsRule;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
@@ -15,17 +17,19 @@ public class AdvisorJCasCompatibilityTest extends RoundTripAbstractTest {
   @Override
   protected void assertConfiguredAsExpected(RestartableJenkinsRule restartableJenkinsRule, String s) {
     AdvisorGlobalConfiguration advisor = AdvisorGlobalConfiguration.getInstance();
-    assertEquals("me@email.com", advisor.getEmail());
-    assertEquals("we@email.com,they@email.com", advisor.getCc());
     assertTrue(advisor.isAcceptToS());
-    assertTrue(advisor.isNagDisabled());
+    assertEquals("me@email.com", advisor.getEmail());
+    assertThat(advisor.getCcs().stream().map(Recipient::getEmail).toArray(),
+      arrayContainingInAnyOrder(Arrays.asList("we@email.com", "they@email.com").toArray()));
     assertEquals(2, advisor.getExcludedComponents().size());
     assertThat(advisor.getExcludedComponents().toArray(),
       arrayContainingInAnyOrder(Arrays.asList("ThreadDumps", "PipelineThreadDump").toArray()));
+    assertTrue(advisor.isNagDisabled());
   }
 
   @Override
   protected String stringInLogExpected() {
     return "excludedComponents = [ThreadDumps, PipelineThreadDump]";
   }
+
 }

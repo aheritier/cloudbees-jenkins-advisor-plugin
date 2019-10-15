@@ -106,9 +106,9 @@ public class BundleUpload extends AsyncPeriodicWork {
     AdvisorGlobalConfiguration config = AdvisorGlobalConfiguration.getInstance();
     try {
       AdvisorClient advisorClient = new AdvisorClient(new Recipient(email));
-
       ClientResponse response = advisorClient
-        .uploadFile(new ClientUploadRequest(Jenkins.get().getLegacyInstanceId(), file, config.getCc(), pluginVersion));
+        .uploadFile(
+          new ClientUploadRequest(Jenkins.get().getLegacyInstanceId(), file, config.getCcs(), pluginVersion));
       if (response.getCode() == 200) {
         updateLastBundleResult(config, createTimestampedMessage(BUNDLE_SUCCESSFULLY_UPLOADED));
       } else {
